@@ -1,3 +1,6 @@
 [submodule "Threat-model-for-Stateful-Auth"]
 	path = Threat-model-for-Stateful-Auth
 	url = https://github.com/SirKanaad26/Threat-model-for-Stateful-Auth.git
+[submodule "threat-model-for-stateful-auth-for-mcp-servers"]
+	path = threat-model-for-stateful-auth-for-mcp-servers
+	url = https://github.com/SirKanaad26/threat-model-for-stateful-auth-for-mcp-servers.git
