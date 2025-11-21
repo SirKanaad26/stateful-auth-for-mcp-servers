@@ -1,0 +1,3 @@
+[submodule "Threat-model-for-Stateful-Auth"]
+	path = Threat-model-for-Stateful-Auth
+	url = https://github.com/SirKanaad26/Threat-model-for-Stateful-Auth.git
