@@ -1,0 +1,30 @@
+[project]
+name = "stateful-auth-for-mcp-servers"
+version = "0.1.0"
+description = "Implementing Stateful Authorization for MCP Servers."
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "cachetools>=6.2.2",
+    "certifi>=2025.11.12",
+    "charset-normalizer>=3.4.4",
+    "google-api-core>=2.28.1",
+    "google-api-python-client>=2.187.0",
+    "google-auth>=2.43.0",
+    "google-auth-httplib2>=0.2.1",
+    "google-auth-oauthlib>=1.2.2",
+    "googleapis-common-protos>=1.72.0",
+    "httplib2>=0.31.0",
+    "idna>=3.11",
+    "oauthlib>=3.3.1",
+    "proto-plus>=1.26.1",
+    "protobuf>=6.33.1",
+    "pyasn1>=0.6.1",
+    "pyasn1-modules>=0.4.2",
+    "pyparsing>=3.2.5",
+    "requests>=2.32.5",
+    "requests-oauthlib>=2.0.0",
+    "rsa>=4.9.1",
+    "uritemplate>=4.2.0",
+    "urllib3>=2.5.0",
+]
