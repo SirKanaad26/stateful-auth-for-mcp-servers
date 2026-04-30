@@ -1,9 +1,9 @@
 # Stateful Authorization for MCP Servers
 
-This repository contains our code for the actual implementation of Stateful Authorization in MCP Servers/
+This repository contains our code for the actual implementation of Stateful Authorization in MCP Servers.
 
 ## Setup & Installation
-1. This project works best with UV. Install.
+1. This project works best with UV.
 2. Clone the repository and its submodules.
 3. Download the dependencies.
 4. Activate the virtual environment.
@@ -16,15 +16,13 @@ source .venv/bin/activate
 ```
 
 
-# Google MCP Server - Prompt Injection Vulnerability
+## Google MCP Server - Prompt Injection Vulnerability
 
-
-
-## Overview
+### Overview
 
 This is a Model Context Protocol (MCP) server that integrates Gmail and Google Calendar through a JSON-RPC 2.0 interface. While the server provides useful functionality for reading emails and managing calendar events, it contains a **critical security vulnerability** related to prompt injection attacks.
 
-## Purpose
+### Purpose
 
 The MCP server enables an AI model (such as Claude via the Claude Desktop application) to:
 - Read recent emails from Gmail
@@ -33,11 +31,11 @@ The MCP server enables an AI model (such as Claude via the Claude Desktop applic
 - Delete calendar events
 - Query upcoming calendar events
 
-## Architecture
+### Architecture
 
 The server follows the MCP specification and communicates via JSON-RPC 2.0 over stdin/stdout. It authenticates with Google APIs using OAuth 2.0 and maintains cached credentials in a pickle file for session persistence.
 
-### Key Components
+#### Key Components
 
 **GoogleAuthenticator**: Handles OAuth 2.0 authentication flow with Google, manages credential caching, and handles token refresh.
 
@@ -47,13 +45,13 @@ The server follows the MCP specification and communicates via JSON-RPC 2.0 over 
 
 **MCPServer**: Main server implementation that handles JSON-RPC 2.0 requests and routes them to appropriate tool handlers.
 
-## The Critical Vulnerability: Prompt Injection
+### The Critical Vulnerability: Prompt Injection
 
-### What is the Vulnerability?
+#### What is the Vulnerability?
 
 This MCP server is vulnerable to **prompt injection attacks** that allow an attacker to manipulate the AI model into making unintended calendar modifications by injecting malicious instructions through email content.
 
-### How the Attack Works
+#### How the Attack Works
 
 The vulnerability exists because of the interaction between these two critical factors:
 
@@ -65,7 +63,7 @@ The vulnerability exists because of the interaction between these two critical f
 
 4. **No Separation of Concerns**: There is no isolation between data retrieval (emails) and actions (calendar modifications). The AI model can read an email and immediately act on instructions embedded within it.
 
-### Attack Scenario
+#### Attack Scenario
 
 Imagine an attacker sends you an email with the following content:
 
@@ -88,7 +86,7 @@ Trusted Contact
 
 When the AI model reads this email, it may interpret the embedded instructions as directives and execute the calendar operations, even though those instructions came from an untrusted source (email).
 
-### Why This Is a Security Issue
+#### Why This Is a Security Issue
 
 **Prompt Injection Breakdown**:
 - **Vector**: Email content (unsanitized user input from potentially untrusted sources)
@@ -103,7 +101,7 @@ When the AI model reads this email, it may interpret the embedded instructions a
 - Disruption of schedule management and calendar integrity
 - Potential for cascading issues (missed actual meetings due to deleted calendar events)
 
-## Required Permissions
+### Required Permissions
 
 The server requests the following Google API scopes:
 
@@ -114,15 +112,15 @@ https://www.googleapis.com/auth/calendar          # Full Calendar access
 
 **Note**: The mismatch between read-only Gmail permissions and full Calendar permissions is particularly concerning in the context of this vulnerability. The server can read any email but can modify the entire calendar based on email content.
 
-## Setup and Installation
+### Setup and Installation
 
-### Prerequisites
+#### Prerequisites
 
 - Python 3.8+
 - Google Cloud project with Gmail and Google Calendar APIs enabled
 - OAuth 2.0 credentials (credentials.json)
 
-### Installation Steps
+#### Installation Steps
 
 1. Clone the repository:
 ```bash
@@ -146,9 +144,9 @@ pip install -r requirements.txt
 python mcp_server.py
 ```
 
-## API Tools Available
+### API Tools Available
 
-### read_emails
+#### read_emails
 Fetch recent emails from Gmail.
 
 **Parameters**:
@@ -157,7 +155,7 @@ Fetch recent emails from Gmail.
 
 **Returns**: List of email objects with: id, threadId, subject, from, to, date, snippet
 
-### create_calendar_event
+#### create_calendar_event
 Create a new calendar event.
 
 **Parameters**:
@@ -168,7 +166,7 @@ Create a new calendar event.
 
 **Returns**: Created event object with id, summary, start, end, htmlLink
 
-### update_calendar_event
+#### update_calendar_event
 Update an existing calendar event.
 
 **Parameters**:
@@ -180,7 +178,7 @@ Update an existing calendar event.
 
 **Returns**: Updated event object
 
-### delete_calendar_event
+#### delete_calendar_event
 Delete a calendar event.
 
 **Parameters**:
@@ -188,7 +186,7 @@ Delete a calendar event.
 
 **Returns**: Boolean indicating success
 
-### get_calendar_events
+#### get_calendar_events
 Retrieve upcoming calendar events.
 
 **Parameters**:
@@ -197,23 +195,23 @@ Retrieve upcoming calendar events.
 
 **Returns**: List of event objects
 
-## Troubleshooting
+### Troubleshooting
 
-### Authentication Issues
+#### Authentication Issues
 
 If you encounter "Could not load token file" warnings:
 - Ensure credentials.json is in the project root
 - Delete token.pickle and re-authenticate
 - Check that OAuth 2.0 credentials have correct scopes
 
-### API Errors
+#### API Errors
 
 Common errors and solutions:
 - **`CalendarService` errors**: Ensure calendar API is enabled in Google Cloud Console
 - **Email not found**: Check email search query syntax
 - **Event not found**: Verify event ID is correct
 
-### Security Warnings
+#### Security Warnings
 
 Any warnings about prompt injection or suspicious calendar modifications:
 1. Review recent email content for embedded instructions
@@ -221,25 +219,12 @@ Any warnings about prompt injection or suspicious calendar modifications:
 3. Revoke token.pickle and re-authenticate
 4. Consider implementing the security recommendations above
 
-## Contributing
-
-When contributing to this project, please be aware of the security implications. Any changes that involve:
-- Processing email content
-- Making calendar modifications
-- Accepting user input
-
-...should be carefully reviewed for prompt injection vulnerabilities.
-
-## Disclaimer
-
-This code is provided as-is for educational purposes. It demonstrates a significant security vulnerability. **Do not use in production environments** without implementing the security recommendations outlined in this README. The author is not responsible for any calendar modifications, data loss, or security incidents resulting from the use of this software.
-
-## Security Contact
+### Security Contact
 
 If you discover additional security vulnerabilities, please report them responsibly to Kanaad Deshpande or Sathvik Balakrishna.
 
 ---
 
-## Quick Reference: The Vulnerability in One Sentence
+### Quick Reference: The Vulnerability in One Sentence
 
 **An attacker can inject malicious instructions into emails that the AI model reads, causing it to unwittingly create, modify, or delete calendar events based on untrusted email content.**
